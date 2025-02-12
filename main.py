@@ -3,6 +3,9 @@ import pandas as pd
 import random
 from datetime import date
 
+def convert_df(df):
+    return df.to_csv()
+
 if 'question_number' not in st.session_state:
     st.session_state.question_number = 0
     st.session_state.csv = pd.read_csv('responses_to_surface.csv'
@@ -64,11 +67,26 @@ if st.session_state.question_number < len(st.session_state.csv):
     policy_comment = st.text_area("(Optional) If there are policy numbers not supplied above, include them in this space", 
                                     key='policy_comment', height=70)
 
-    st.button('Next', on_click=next_question)
-else: 
-    def convert_df(df):
-        return df.to_csv()
+    st.button('Save & Next', on_click=next_question)
 
+    st.write('')
+    st.write('')
+    st.write('')
+
+    
+    st.write('If you need to save your progress, use the button below to download your results so far')
+    csv = convert_df(st.session_state.csv)
+    st.download_button(
+        label="Download data as CSV",
+        data=csv,
+        file_name=f"results_{date.today()}.csv",
+        mime="text/csv",
+    )
+
+    
+
+
+else: 
     csv = convert_df(st.session_state.csv)
 
     st.write("You're at the end, thank you! Please download your responses and share it with a team member :)")
